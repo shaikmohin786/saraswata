@@ -1,36 +1,95 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Saraswata Niketanam — Next.js CMS
 
-## Getting Started
+Modern full-stack migration of the legacy CodeIgniter 3 CMS.
 
-First, run the development server:
+**Legacy project is untouched.** This app lives in a separate folder and uses copied media assets plus the same MySQL schema.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## Stack
+
+- Next.js 16 (App Router)
+- TypeScript
+- MySQL via mysql2 (WAMP)
+- Auth.js (NextAuth v5) — credentials + legacy MD5 passwords
+- Tailwind CSS + Server Actions
+- Prisma schema (documentation; runtime uses mysql2)
+
+## Local setup (WAMP)
+
+### 1. Start WAMP — MySQL must be running
+
+### 2. Import database
+
+```powershell
+cd saraswata-nextjs
+npm run db:import
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Or use WAMP MySQL console — see previous README section.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 3. Environment
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+DATABASE_URL="mysql://root:@localhost:3306/saraswat_db"
+AUTH_SECRET="your-long-random-secret"
+AUTH_URL="http://localhost:3000"
+NEXT_PUBLIC_SITE_URL="http://localhost:3000"
+```
 
-## Learn More
+### 4. Run
 
-To learn more about Next.js, take a look at the following resources:
+```powershell
+cd saraswata-nextjs
+npm install
+npm run dev
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **Website:** http://localhost:3000
+- **Admin:** http://localhost:3000/admin/login
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Login with your legacy admin email + password from the `users` table.
 
-## Deploy on Vercel
+## Public routes
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+| URL | Description |
+|-----|-------------|
+| `/` | Home |
+| `/posts`, `/posts/{category}` | Posts listing |
+| `/{post-slug}` | Single post |
+| `/gallery`, `/gallery/view/{slug}` | Gallery |
+| `/videos`, `/videos/view/{slug}` | Videos |
+| `/page/{slug}` | CMS pages |
+| `/search?q=term` | Search |
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Admin routes
+
+| URL | Description |
+|-----|-------------|
+| `/admin/login` | Login |
+| `/admin/dashboard` | Dashboard stats |
+| `/admin/posts` | Posts CRUD |
+| `/admin/pages` | Pages CRUD |
+| `/admin/gallery` | Gallery CRUD |
+| `/admin/videos` | Videos CRUD |
+| `/admin/menu` | Menu management |
+| `/admin/sliders` | Slider management |
+| `/admin/settings` | Site settings |
+| `/admin/users` | User management |
+| `/admin/profile` | Your profile |
+| `/admin/trash` | Restore / delete trashed items |
+| `/admin/backup` | Backup instructions + data fixes |
+
+## Migration status
+
+- [x] Phase 0 — Scaffold, assets, design tokens
+- [x] Phase 1 — Public layout + home
+- [x] Phase 2 — Public pages (posts, gallery, videos, pages, search)
+- [x] Phase 3 — Admin panel + Auth.js + CRUD + categories + uploads + settings
+- [ ] Phase 4 — Production QA & cutover
+
+## Design tokens
+
+| Token | Color |
+|-------|-------|
+| Primary | `#1B3A4B` |
+| Secondary | `#F5F0E8` |
+| Accent | `#C8A951` |

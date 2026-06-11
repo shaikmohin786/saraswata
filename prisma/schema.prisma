@@ -1,0 +1,298 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model GlobalSettings {
+  ConfigID               Int      @id @default(autoincrement())
+  ConfigSiteName         String   @db.VarChar(255)
+  ConfigSiteLogo         String   @db.VarChar(255)
+  ConfigFooterText       String   @db.VarChar(500)
+  ConfigContent          String   @db.Text
+  ConfigDefaultTitle     String   @db.VarChar(255)
+  ConfigDefaultDescription String @db.Text
+  ConfigDefaultKeywords  String   @db.Text
+  ConfigAnalyticsCode    String   @db.Text
+  ConfigFBURL            String   @db.VarChar(255)
+  ConfigTwitterURL       String   @db.VarChar(255)
+  ConfigLinkedinURL      String   @db.VarChar(255)
+  ConfigInstagramURL     String   @db.VarChar(255)
+  ConfigYoutubeURL       String   @db.VarChar(255)
+  ConfigPinterestURL     String   @db.VarChar(255)
+  ConfigMaps             String   @db.Text
+  ConfigWorkingHours     String   @db.Text
+  ConfigContact          String   @db.Text
+  ConfigPostsImage       String   @db.Text
+  ConfigGalleryImage     String   @db.Text
+  ConfigVideosImage      String   @db.Text
+  ConfigCreated          DateTime @db.DateTime(0)
+  CongifCreatedBy        Int
+  ConfigModified         DateTime @db.DateTime(0)
+  ConfigModifiedBy       Int
+
+  @@map("global_settings")
+}
+
+model Page {
+  PageID              Int       @id @default(autoincrement())
+  PageTitle           String    @db.VarChar(255)
+  PageTitleAlias      String    @db.VarChar(255)
+  PageDescription     String    @db.Text
+  PageMetaTitle       String    @db.VarChar(255)
+  PageMetaDescription String    @db.Text
+  PageMetaKeywords    String    @db.Text
+  PageImage           String    @db.Text
+  PageViews           Int
+  PageStatus          Int       @db.TinyInt
+  PageDelete          Int       @db.TinyInt
+  PageCreated         DateTime  @db.DateTime(0)
+  PageCreatedBy       Int
+  PageModified        DateTime? @db.DateTime(0)
+  PageModifiedBy      Int?
+
+  @@map("pages")
+}
+
+model PostCategory {
+  PostCategoryID              Int      @id @default(autoincrement())
+  PostCategoryTitle           String   @db.VarChar(255)
+  PostCategoryTitleAlias      String   @db.VarChar(255)
+  PostCategoryParentID        Int
+  PostCategoryLevel           Int
+  PostCategoryHeaderImage     String   @db.Text
+  PostCategoryImage           String   @db.Text
+  PostCategoryOrdering        Int
+  PostCategoryStatus          Int      @db.TinyInt
+  PostCategoryDelete          Int      @db.TinyInt
+  PostCategoryMetaTitle       String   @db.Text
+  PostCategoryMetaDescription String   @db.Text
+  PostCategoryMetaKeywords    String   @db.Text
+  PostCategoryCreated         DateTime @db.DateTime(0)
+  PostCategoryCreatedBy       Int
+  PostCategoryModified        DateTime @db.DateTime(0)
+  PostCategoryModifiedBy      Int
+  posts                       Post[]
+
+  @@map("posts_category")
+}
+
+model Post {
+  PostID              Int          @id @default(autoincrement())
+  PostCategoryID      Int
+  PostTitle           String       @db.VarChar(255)
+  PostTitleAlias      String       @db.VarChar(1000)
+  PostDescription     String       @db.Text
+  PostImage           String       @db.VarChar(255)
+  PostVideoURL        String       @db.VarChar(255)
+  PostVideoCode       String?      @db.Text
+  PostTags            String       @db.Text
+  PostShowApp         Int          @default(0) @db.TinyInt
+  PostMetaTitle       String       @db.VarChar(255)
+  PostMetaDescription String       @db.Text
+  PostMetaKeywords    String       @db.Text
+  PostPublishedDate   DateTime     @db.DateTime(0)
+  PostViews           Int          @default(0)
+  PostStatus          Int          @default(0) @db.TinyInt
+  PostDelete          Int          @default(0) @db.TinyInt
+  PostCreated         DateTime     @db.DateTime(0)
+  PostCreatedBy       Int
+  PostModified        DateTime?    @db.DateTime(0)
+  PostModifiedBy      Int?
+  category            PostCategory @relation(fields: [PostCategoryID], references: [PostCategoryID])
+
+  @@index([PostCategoryID])
+  @@map("posts")
+}
+
+model GalleryCategory {
+  GalleryCategoryID              Int      @id @default(autoincrement())
+  GalleryCategoryTitle           String   @db.VarChar(255)
+  GalleryCategoryTitleTelugu     String   @db.VarChar(255)
+  GalleryCategoryTitleAlias      String   @db.VarChar(255)
+  GalleryCategoryParentID        Int
+  GalleryCategoryCategoryLevel   Int      @db.TinyInt
+  GalleryCategoryHeaderImage     String   @db.Text
+  GalleryCategoryImage           String   @db.VarChar(255)
+  GalleryCategoryMetaTitle       String   @db.Text
+  GalleryCategoryMetaDescription String   @db.Text
+  GalleryCategoryMetaKeywords    String   @db.Text
+  GalleryCategoryOrdering        Int      @db.TinyInt
+  GalleryCategoryStatus          Int      @db.TinyInt
+  GalleryCategoryDelete          Int      @db.TinyInt
+  GalleryCategoryCreated         DateTime @db.DateTime(0)
+  GalleryCategoryCreatedBy       Int
+  GalleryCategoryModified        DateTime @db.DateTime(0)
+  GalleryCategoryModifiedBy      Int
+  galleries                      Gallery[]
+
+  @@map("gallery_category")
+}
+
+model Gallery {
+  GalleryID              Int             @id @default(autoincrement())
+  GalleryTitle           String          @db.VarChar(255)
+  GalleryTitleAlias      String          @db.VarChar(255)
+  GalleryCategory        Int
+  GalleryImage           String          @db.Text
+  GalleryTags            String          @db.Text
+  GalleryDescription     String          @db.Text
+  GalleryMetaTitle       String          @db.Text
+  GalleryMetaDescription String          @db.Text
+  GalleryMetaKeywords    String          @db.Text
+  GalleryStatus          Int             @db.TinyInt
+  GalleryDelete          Int             @db.TinyInt
+  GalleryCreated         DateTime        @db.DateTime(0)
+  GalleryCreatedBy       Int
+  GalleryModified        DateTime        @db.DateTime(0)
+  GalleryModifiedBy      Int
+  category               GalleryCategory @relation(fields: [GalleryCategory], references: [GalleryCategoryID])
+
+  @@index([GalleryCategory])
+  @@map("gallery")
+}
+
+model VideoCategory {
+  VideoCategoryID              Int      @id @default(autoincrement())
+  VideoCategoryTitle           String   @db.VarChar(255)
+  VideoCategoryTitleAlias      String   @db.VarChar(255)
+  VideoCategoryParentID        Int
+  VideoCategoryCategoryLevel   Int
+  VideoCategoryHeaderImage     String   @db.Text
+  VideoCategoryImage           String   @db.Text
+  VideoCategoryMetaTitle       String   @db.VarChar(255)
+  VideoCategoryMetaDescription String   @db.Text
+  VideoCategoryMetaKeywords    String   @db.Text
+  VideoCategoryOrdering        Int
+  VideoCategoryStatus          Int      @db.TinyInt
+  VideoCategoryDelete          Int      @db.TinyInt
+  VideoCategoryCreated         DateTime @db.DateTime(0)
+  VideoCategoryCreatedBy       Int
+  VideoCategoryModified        DateTime @db.DateTime(0)
+  VideoCategoryModifiedBy      Int
+
+  @@map("video_category")
+}
+
+model Video {
+  VideoID              Int      @id @default(autoincrement())
+  VideoTitle           String   @db.VarChar(255)
+  VideoTitleAlias      String   @db.VarChar(255)
+  VideoCategory        Int
+  VideoYoutubeURL      String   @db.VarChar(255)
+  VideoTags            String   @db.Text
+  VideoDescription     String   @db.Text
+  VideoMetaTitle       String   @db.VarChar(255)
+  VideoMetaDescription String   @db.Text
+  VideoMetaKeywords    String   @db.Text
+  VideoStatus          Int      @db.TinyInt
+  VideoDelete          Int      @db.TinyInt
+  VideoCreated         DateTime @db.DateTime(0)
+  VideoCreatedBy       Int
+  VideoModified        DateTime @db.DateTime(0)
+  VideoModifiedBy      Int
+
+  @@index([VideoCategory])
+  @@map("videos")
+}
+
+model Slider {
+  SliderID         Int      @id @default(autoincrement())
+  SliderImage1     String   @db.Text
+  SliderText1      String   @db.VarChar(255)
+  SliderImage2     String   @db.Text
+  SliderText2      String   @db.VarChar(255)
+  SliderImage3     String   @db.Text
+  SliderText3      String   @db.VarChar(255)
+  SliderImage4     String   @db.Text
+  SliderText4      String   @db.VarChar(255)
+  SliderImage5     String   @db.Text
+  SliderText5      String   @db.VarChar(255)
+  SliderDelete     Int      @db.TinyInt
+  SliderCreated    DateTime @db.DateTime(0)
+  SliderCreatedBy  Int
+  SliderModified   DateTime @db.DateTime(0)
+  SliderModifiedBy Int
+
+  @@map("sliders")
+}
+
+model MenuGroup {
+  MenuID         Int    @id @default(autoincrement())
+  MenuGroupName  String @db.VarChar(100)
+  MenuGroupSlug  String @db.VarChar(100)
+  MenuGroupStatus Int   @db.TinyInt
+
+  @@map("menu_group")
+}
+
+model MenuPostType {
+  MenuPostTypeID     Int    @id @default(autoincrement())
+  MenuPostType       String @db.VarChar(255)
+  MenuPostTypeStatus Int    @db.TinyInt
+  MenuPostTypeDelete Int    @db.TinyInt
+
+  @@map("menu_post_type")
+}
+
+model MenuList {
+  MenuID         Int      @id @default(autoincrement())
+  MenuTitle      String   @db.VarChar(255)
+  MenuParentID   Int
+  MenuType       String   @db.VarChar(20)
+  MenuPostType   Int      @db.TinyInt
+  MenuParameter  String   @db.VarChar(255)
+  MenuSlug       String   @db.VarChar(255)
+  MenuPostID     Int
+  MenuStatus     Int      @db.TinyInt
+  MenuDelete     Int      @db.TinyInt
+  MenuOrdering   Int      @db.TinyInt
+  MenuGroup      Int
+  MenuCreated    DateTime @db.DateTime(0)
+  MenuCreatedBy  Int
+  MenuModified   DateTime @db.DateTime(0)
+  MenuModifiedBy Int
+
+  @@map("menu_list")
+}
+
+model UserRole {
+  UserRoleID         Int      @id @default(autoincrement())
+  UserRoleName       String   @db.VarChar(256)
+  UserRoleStatus     Int      @db.TinyInt
+  UserRoleDelete     Int      @db.TinyInt
+  UserRoleCreated    DateTime @db.DateTime(0)
+  UserRoleCreatedBy  Int
+  UserRoleModified   DateTime @db.DateTime(0)
+  UserRoleModifiedBy Int
+  users              User[]
+
+  @@map("user_roles")
+}
+
+model User {
+  UserID         Int      @id @default(autoincrement())
+  UserName       String   @db.VarChar(100)
+  UserFirstName  String   @db.VarChar(256)
+  UserLastName   String   @db.VarChar(256)
+  UserEmailID    String   @db.VarChar(256)
+  UserPassword   String   @db.VarChar(350)
+  UserMD5Hash    String   @db.VarChar(256)
+  UserPhone      String   @db.VarChar(15)
+  UserRole       Int      @db.TinyInt
+  UserGender     Int      @db.TinyInt
+  UserProfilePic String   @db.Text
+  UserStatus     Int      @db.TinyInt
+  UserDelete     Int      @db.TinyInt
+  UserCreated    DateTime @db.DateTime(0)
+  UserCreatedBy  Int
+  UserModified   DateTime @db.DateTime(0)
+  UserModifiedBy Int
+  role           UserRole @relation(fields: [UserRole], references: [UserRoleID])
+
+  @@index([UserRole])
+  @@map("users")
+}
